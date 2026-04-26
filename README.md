@@ -1,113 +1,113 @@
-# Project Euphonia App
+# Aplicativo Project Euphonia
 
-This repository provides an open-source toolkit to build personalized speech recognition solutions, stemming from the broader [Project Euphonia](https://sites.research.google/euphonia/about/) initiative started by Google in 2019. This specific iteration focuses on enabling improved speech-to-text transcription, particularly for individuals with non-standard speech.
+Este repositório fornece um toolkit open-source para criar soluções personalizadas de reconhecimento de fala, derivado da iniciativa mais ampla [Project Euphonia](https://sites.research.google/euphonia/about/), iniciada pelo Google em 2019. Esta iteração específica foca em possibilitar uma transcrição aprimorada de fala para texto, especialmente para pessoas com fala não padrão.
 
-## Intended Use
+## Uso Pretendido
 
-Project Euphonia App is a set of open-source toolkits intended for use by developers to create and customize speech recognition solutions. It provides tools and documentation for collecting speech data, fine-tuning open-source Automatic Speech Recognition (ASR) models, and deploying those models for speech-to-text transcription.The open-source toolkits, in its original form, is not intended to be used without modification for the diagnosis, treatment, mitigation, or prevention of any disease or medical condition. Developers are solely responsible for making substantial changes to Project Euphonia’s open-source toolkits and for ensuring that any applications they create comply with all applicable laws and regulations, including those related to medical devices.
+O Project Euphonia App é um conjunto de toolkits open-source destinado ao uso por desenvolvedores para criar e customizar soluções de reconhecimento de fala. Ele fornece ferramentas e documentação para coleta de dados de fala, ajuste fino de modelos open-source de Reconhecimento Automático de Fala (ASR) e implantação desses modelos para transcrição de fala para texto. Os toolkits open-source, em sua forma original, não se destinam ao uso sem modificações para diagnóstico, tratamento, mitigação ou prevenção de qualquer doença ou condição médica. Os desenvolvedores são os únicos responsáveis por fazer alterações substanciais nos toolkits open-source do Project Euphonia e por garantir que quaisquer aplicações criadas estejam em conformidade com todas as leis e regulamentações aplicáveis, incluindo as relacionadas a dispositivos médicos.
 
-### Indications for Use
+### Indicações de Uso
 
-Project Euphonia’s open-source toolkits is intended to provide developers with the capability to:
+Os toolkits open-source do Project Euphonia foram concebidos para fornecer aos desenvolvedores a capacidade de:
 
-- Collect volunteered speech data using a customizable mobile application.
-- Fine-tune open-source Automatic Speech Recognition (ASR) models using provided training recipes and infrastructure.
-- Deploy trained ASR models for speech-to-text transcription.
-- Create accessibility solutions and other applications that leverage customized speech recognition technology.
+- Coletar dados de fala voluntários usando um aplicativo móvel customizável.
+- Realizar ajuste fino de modelos open-source de Reconhecimento Automático de Fala (ASR) usando receitas de treinamento e infraestrutura fornecidas.
+- Implantar modelos ASR treinados para transcrição de fala para texto.
+- Criar soluções de acessibilidade e outras aplicações que aproveitem tecnologia de reconhecimento de fala customizada.
 
-### Toolkit Description
+### Descrição do Toolkit
 
-Project Euphonia’s open-source toolkits are designed to facilitate the creation of customized speech recognition solutions. The toolkits consists of:
+Os toolkits open-source do Project Euphonia são projetados para facilitar a criação de soluções customizadas de reconhecimento de fala. O conjunto inclui:
 
-- A **Flutter-based mobile application** for recording speech data and associating it with text phrases. The application stores data in a Firebase Storage instance controlled by the developer.
-- **Google Colab notebooks** providing example code and documentation for fine-tuning open-source Automatic Speech Recognition (ASR) models. The notebooks will help inform developers on the following topics: data preparation, model training, and performance evaluation.
-- Example code for deploying a **web service** that performs speech-to-text transcription using the fine-tuned ASR models. The web service can be deployed to cloud platforms such as Google Cloud Run.
+- Um **aplicativo móvel baseado em Flutter** para gravar dados de fala e associá-los a frases de texto. O aplicativo armazena dados em uma instância do Firebase Storage controlada pelo desenvolvedor.
+- **Notebooks do Google Colab** com código de exemplo e documentação para ajuste fino de modelos open-source de Reconhecimento Automático de Fala (ASR). Os notebooks ajudam a orientar os desenvolvedores nos seguintes tópicos: preparação de dados, treinamento de modelos e avaliação de desempenho.
+- Código de exemplo para implantar um **serviço web** que realiza transcrição de fala para texto usando os modelos ASR ajustados. O serviço web pode ser implantado em plataformas de nuvem, como o Google Cloud Run.
 
-## Setup
+## Configuração
 
-Clone the repository:
+Clone o repositório:
 
 ```bash
 git clone https://github.com/google/project-euphonia-app
 cd project-euphonia-app
 ```
 
-### Flutter-based mobile application
+### Aplicativo móvel baseado em Flutter
 
-This component consists of a **Flutter-based mobile application**. The application consists on 2 main section:
+Este componente consiste em um **aplicativo móvel baseado em Flutter**. O aplicativo possui 2 seções principais:
 
-- a section that allows users to record phrases in their own voice.
-- a section to transcribe user speech into text using the trained model.
+- uma seção que permite aos usuários gravar frases com a própria voz.
+- uma seção para transcrever a fala do usuário em texto usando o modelo treinado.
 
-The application comes with a set of 100 default phrases located under `assets/phrases.txt`. You can customize or add more phrases. You can, for example, create training phrases for different languages. For reference, in the folder you can find `assets/phrases_it.txt` file with 100 Italian phrases you can use to update the `assets/phrases.txt` file.
+O aplicativo vem com um conjunto de 100 frases padrão localizado em `assets/phrases.txt`. Você pode customizar ou adicionar mais frases. Por exemplo, é possível criar frases de treinamento para diferentes idiomas. Como referência, na pasta você encontra o arquivo `assets/phrases_it.txt`, com 100 frases em italiano, que podem ser usadas para atualizar o arquivo `assets/phrases.txt`.
 
-Please create a list of 100 short English phrases such that they have good distribution of all phonemes and their allophones, try to keep the length of each phrase less than 140. Please make sure none of the words in the list are repeated more than thrice. All the phrases don't need to be a valid sentence either, the important task is to ensure coverage over all phonemes and maintain a good distribution of allophones. Please don't add numbering at the beginning of the list.
+Crie uma lista de 100 frases curtas em inglês de forma que elas tenham boa distribuição de todos os fonemas e seus alofones, tentando manter o comprimento de cada frase abaixo de 140 caracteres. Garanta que nenhuma palavra da lista seja repetida mais de três vezes. As frases não precisam necessariamente formar sentenças válidas; o mais importante é garantir cobertura de todos os fonemas e manter uma boa distribuição de alofones. Não adicione numeração no início da lista.
 
-The recorded speech data is stored in a **Firebase Storage** instance created and controlled by you.
+Os dados de fala gravados são armazenados em uma instância do **Firebase Storage** criada e controlada por você.
 
-#### Prerequisites
+#### Pré-requisitos
 
-The application requires a [Firebase Storage](https://firebase.google.com/docs/storage). Please follow the following steps:
+O aplicativo requer um [Firebase Storage](https://firebase.google.com/docs/storage). Siga os passos abaixo:
 
-- Create a project from the [Firebase console](https://console.firebase.google.com/)
-- [Create firebase storage](https://firebase.google.com/docs/storage/web/start) (Note: not "database", it needs to be "storage").
-- Configure security rules as public. NOTE: This makes your files accessible by anyone. Consider adding autentication to secure your data.
+- Crie um projeto no [console do Firebase](https://console.firebase.google.com/).
+- [Crie um Firebase Storage](https://firebase.google.com/docs/storage/web/start) (Observação: não é "database", precisa ser "storage").
+- Configure as regras de segurança como públicas. OBSERVAÇÃO: isso torna seus arquivos acessíveis por qualquer pessoa. Considere adicionar autenticação para proteger seus dados.
 
-Install [Android Studio](https://developer.android.com/studio/install) 2023.3.1 (Jellyfish) or later to debug and compile Java or Kotlin code for Android. Flutter requires the full version of Android Studio.
+Instale o [Android Studio](https://developer.android.com/studio/install) 2023.3.1 (Jellyfish) ou superior para depurar e compilar código Java ou Kotlin para Android. O Flutter requer a versão completa do Android Studio.
 
-Install the [Flutter SDK](https://docs.flutter.dev/get-started/install). When you run the current version of `flutter doctor`, it might list a different version of one of these packages. If it does, install the version it recommends.
+Instale o [Flutter SDK](https://docs.flutter.dev/get-started/install). Ao executar a versão atual do `flutter doctor`, ele pode listar uma versão diferente de algum desses pacotes. Se isso ocorrer, instale a versão recomendada.
 
-### Installation
+### Instalação
 
-- Run `firebase login`
-- Run `dart pub global activate flutterfire_cli`
-- Configure Flutter project running `flutterfire configure --project=<project-id>`
+- Execute `firebase login`
+- Execute `dart pub global activate flutterfire_cli`
+- Configure o projeto Flutter executando `flutterfire configure --project=<project-id>`
 
-For Android app use Android studio or run `flutter build apk` and `build/app/outputs/flutter-apk/app-release.apk` to install the app on the phone.
-For iOS: Run `cd ios` and `run pod install`. Make sure mobile-provisioning profiles are present to install the app on-device.
+Para Android, use o Android Studio ou execute `flutter build apk` e instale `build/app/outputs/flutter-apk/app-release.apk` no telefone.
+Para iOS: execute `cd ios` e `pod install`. Certifique-se de que os perfis de provisionamento móvel estejam presentes para instalar o app no dispositivo.
 
-### Train model
+### Treinar modelo
 
-This component consists of a Google Colab notebook to run the training. The Notebook will train ASR an open source model to recognize the speech of the user that recorded the training phrases.
+Este componente consiste em um notebook do Google Colab para executar o treinamento. O notebook treinará um modelo ASR open-source para reconhecer a fala do usuário que gravou as frases de treinamento.
 
-Open the notebook in the [training_colabs](https://github.com/google/project-euphonia-app/tree/main/training_colabs) and follow the steps.
+Abra o notebook em [training_colabs](https://github.com/google/project-euphonia-app/tree/main/training_colabs) e siga as etapas.
 
-### Web service that performs speech-to-text
+### Serviço web que realiza fala para texto
 
-This component consist of a simple web application to serve the model trained in the previous step. The app is containerized and can be run in Google Cloud Run.
+Este componente consiste em uma aplicação web simples para servir o modelo treinado na etapa anterior. O app é conteinerizado e pode ser executado no Google Cloud Run.
 
 #### Deploy
 
-Copy the trained model (e.g. `pytorch_model.bin`) into the `api/custom_tiny_whisper_model/` folder. Place custom tiny whisper model in the custom_tiny_whisper_model directory as pytorch_model.bin.
+Copie o modelo treinado (por exemplo, `pytorch_model.bin`) para a pasta `api/custom_tiny_whisper_model/`. Coloque o modelo custom tiny whisper no diretório `custom_tiny_whisper_model` com o nome `pytorch_model.bin`.
 
-Deploy the web app into Google Cloud Run following steps reported in the [app README](api/).
+Faça o deploy da aplicação web no Google Cloud Run seguindo os passos descritos no [README da API](api/).
 
-## Usage
+## Uso
 
-Following all [Setup](#setup) steps you installed the Project Euphonia App on your smartphone and the api on Google Cloud Run. You can now set the URL of the Google Cloud Run instance in the app Settings and start transcribing your speech.
+Após seguir todas as etapas de [Configuração](#configuração), você terá instalado o Project Euphonia App no seu smartphone e a API no Google Cloud Run. Agora você pode definir a URL da instância do Google Cloud Run nas configurações do app e começar a transcrever sua fala.
 
-## Localization (Internationalization)
+## Localização (Internacionalização)
 
-This application supports localization, allowing it to be translated into different languages.
+Este aplicativo oferece suporte a localização, permitindo tradução para diferentes idiomas.
 
-To contribute a new localization for the app, please follow these steps:
+Para contribuir com uma nova localização do app, siga estes passos:
 
-**Create a new ARB file:** Inside the `/lib/l10n` directory, create a new file named according to the following pattern: `app_COUNTRY_CODE.arb`.
-Replace `COUNTRY_CODE` with the appropriate two-letter ISO 639-1 language code (in lowercase). For example:
+**Crie um novo arquivo ARB:** Dentro do diretório `/lib/l10n`, crie um novo arquivo nomeado conforme o padrão `app_COUNTRY_CODE.arb`.
+Substitua `COUNTRY_CODE` pelo código de idioma ISO 639-1 apropriado de duas letras (em minúsculas). Por exemplo:
 
-- For Italian, the file name would be `app_it.arb`.
-- For French, the file name would be `app_fr.arb`.
-- And so on.
+- Para italiano, o nome do arquivo seria `app_it.arb`.
+- Para francês, o nome do arquivo seria `app_fr.arb`.
+- E assim por diante.
 
-**Add translations:** Open the newly created `.arb` file and add your translations in the standard ARB (Application Resource Bundle) format. This is a JSON-based format where keys represent the identifiers of your text strings and values are their translations in the target language.
+**Adicione traduções:** Abra o arquivo `.arb` recém-criado e adicione suas traduções no formato ARB (Application Resource Bundle) padrão. Esse formato é baseado em JSON, em que as chaves representam os identificadores dos textos e os valores são suas traduções no idioma de destino.
 
 ```json
 {
-    "appTitle": "Project Euphonia",
-    "recordButtonTitle": "Registra"
+  "appTitle": "Project Euphonia",
+  "recordButtonTitle": "Gravar"
 }
 ```
 
-**Contribute your changes:** Once you have added the translations, add the file to the repository following our [contributing guidelines](CONTRIBUTING.md).
+**Contribua com suas mudanças:** Após adicionar as traduções, inclua o arquivo no repositório seguindo nossas [diretrizes de contribuição](CONTRIBUTING.md).
 
-Thank you for helping to make our app accessible to a wider audience!
+Obrigado por ajudar a tornar nosso app acessível para um público mais amplo!
