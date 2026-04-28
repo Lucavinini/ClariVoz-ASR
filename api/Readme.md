@@ -1,11 +1,11 @@
-# Project Euphonia serving model API
+# API de servico do modelo do Project Euphonia
 
-Deploy transcription API as service in Google Cloud run:
-(see also: <https://cloud.google.com/build/docs/build-push-docker-image>)
+Implante a API de transcricao como servico no Google Cloud Run:
+(veja tambem: <https://cloud.google.com/build/docs/build-push-docker-image>)
 
-## Prerequisites
+## Pre-requisitos
 
-Configure environment variables:
+Configure as variaveis de ambiente:
 
 ```bash
 export PROJECT_ID="my_project_id"
@@ -13,7 +13,7 @@ export LOCATION="my-project-location"
 export TAG="V1"
 ```
 
-Run `gcloud auth login` and create a repository in GCP:
+Execute `gcloud auth login` e crie um repositorio no GCP:
 
 ```bash
 gcloud artifacts repositories create project-euphonia \
@@ -22,7 +22,7 @@ gcloud artifacts repositories create project-euphonia \
     --description="Project Euphonia Docker repository"
 ```
 
-Build a new image and upload to repository:
+Crie uma nova imagem e envie para o repositorio:
 
 ```bash
 gcloud builds submit \
@@ -32,9 +32,9 @@ gcloud builds submit \
     .
 ```
 
-## Container deploy
+## Deploy do conteiner
 
-[Deploy](https://cloud.google.com/sdk/gcloud/reference/run/deploy) and run service:
+Faca o [deploy](https://cloud.google.com/sdk/gcloud/reference/run/deploy) e execute o servico:
 
 ```bash
 gcloud run deploy project-euphonia-inference \
@@ -46,39 +46,42 @@ gcloud run deploy project-euphonia-inference \
     --image=LOCATION-docker.pkg.dev/PROJECT_ID/REPO_NAME/PATH:TAG
 ```
 
-**Note**: when deploying whisper large, we need more memory, and in consequence also up the CPUs. Configure `memory` and `cpu` accordingly.
+**Nota**: ao implantar o whisper large, precisamos de mais memoria e, consequentemente, mais CPU. Configure `memory` e `cpu` de acordo.
 
-**Note**: when deploying model trained for a language other than English, configure the language in the app python script. For example, this is the configuration for serving Italian transcription models:
+**Nota**: ao implantar um modelo treinado para um idioma diferente do ingles, configure o idioma no script python do app. Por exemplo, esta e a configuracao para servir modelos de transcricao em italiano:
 
 ```python
-# set language to whatever language you used in fine-tuning the model
+# defina o idioma de acordo com o usado no ajuste fino do modelo
 LANGUAGE = "it"
 ```
 
-## Test
+## Teste
 
-- find your active Cloud Run endpoints under: <http://console.cloud.google.com/run>
-- when you click on the specific service name (if you keep the settings from above, it will be called "`project-euphonia-inference`"), you'll find a URL, eg like `https://project-euphonia-inference-xyz.LOCATION.run.app`.
-- test eg with curl (it might take a few minutes for the service to be ready):
-curl -F wav=@<path-to-wav-file> <https://project-euphonia-inference-xyz.LOCATION.run.app/transcribe>
+- encontre seus endpoints ativos do Cloud Run em: <http://console.cloud.google.com/run>
+- ao clicar no nome do servico especifico (se voce mantiver as configuracoes acima, ele se chamara "`project-euphonia-inference`"), voce encontrara uma URL, por exemplo: `https://project-euphonia-inference-xyz.LOCATION.run.app`.
+- teste com curl (pode levar alguns minutos para o servico ficar pronto):
 
-## Intended Use
+```bash
+curl -F wav=@<caminho-para-arquivo-wav> https://project-euphonia-inference-xyz.LOCATION.run.app/transcribe
+```
 
-Project Euphonia is a set of open-source toolkits intended for use by developers to create and customize speech recognition solutions. It provides tools and documentation for collecting speech data, fine-tuning open-source Automatic Speech Recognition (ASR) models, and deploying those models for speech-to-text transcription.The open-source toolkits, in its original form, is not intended to be used without modification for the diagnosis, treatment, mitigation, or prevention of any disease or medical condition. Developers are solely responsible for making substantial changes to Project Euphonia’s open-source toolkits and for ensuring that any applications they create comply with all applicable laws and regulations, including those related to medical devices.
+## Uso pretendido
 
-### Indications for Use
+O Project Euphonia e um conjunto de toolkits open-source destinado ao uso por desenvolvedores para criar e personalizar solucoes de reconhecimento de fala. Ele fornece ferramentas e documentacao para coletar dados de fala, fazer ajuste fino de modelos open-source de Reconhecimento Automatico de Fala (ASR) e implantar esses modelos para transcricao de fala em texto. Os toolkits open-source, em sua forma original, nao se destinam ao uso sem modificacoes para diagnostico, tratamento, mitigacao ou prevencao de qualquer doenca ou condicao medica. Os desenvolvedores sao os unicos responsaveis por realizar mudancas substanciais nos toolkits open-source do Project Euphonia e por garantir que quaisquer aplicacoes criadas cumpram todas as leis e regulamentacoes aplicaveis, incluindo as relacionadas a dispositivos medicos.
 
-Project Euphonia’s open-source toolkits is intended to provide developers with the capability to:
+### Indicacoes de uso
 
-- Collect volunteered speech data using a customizable mobile application.
-Fine-tune open-source Automatic Speech Recognition (ASR) models using provided training recipes and infrastructure.
-- Deploy trained ASR models for speech-to-text transcription.
-- Create accessibility solutions and other applications that leverage customized speech recognition technology.
+Os toolkits open-source do Project Euphonia foram concebidos para fornecer aos desenvolvedores a capacidade de:
 
-### Toolkit Description
+- Coletar dados de fala voluntarios usando um aplicativo movel customizavel.
+- Realizar ajuste fino de modelos open-source de Reconhecimento Automatico de Fala (ASR) usando receitas de treinamento e infraestrutura fornecidas.
+- Implantar modelos ASR treinados para transcricao de fala em texto.
+- Criar solucoes de acessibilidade e outras aplicacoes que aproveitem tecnologia de reconhecimento de fala customizada.
 
-Project Euphonia’s open-source toolkits are designed to facilitate the creation of customized speech recognition solutions. The toolkits consists of:
+### Descricao do toolkit
 
-- A Flutter-based mobile application for recording speech data and associating it with text phrases. The application stores data in a Firebase Storage instance controlled by the developer.
-- Google Colab notebooks providing example code and documentation for fine-tuning open-source Automatic Speech Recognition (ASR) models. The notebooks will help inform developers on the following topics: data preparation, model training, and performance evaluation.
-- Example code for deploying a web service that performs speech-to-text transcription using the fine-tuned ASR models. The web service can be deployed to cloud platforms such as Google Cloud Run.
+Os toolkits open-source do Project Euphonia sao projetados para facilitar a criacao de solucoes customizadas de reconhecimento de fala. O conjunto inclui:
+
+- Um aplicativo movel baseado em Flutter para gravar dados de fala e associa-los a frases de texto. O aplicativo armazena dados em uma instancia do Firebase Storage controlada pelo desenvolvedor.
+- Notebooks do Google Colab com codigo de exemplo e documentacao para ajuste fino de modelos open-source de Reconhecimento Automatico de Fala (ASR). Os notebooks ajudam a orientar os desenvolvedores nos seguintes topicos: preparacao de dados, treinamento de modelos e avaliacao de desempenho.
+- Codigo de exemplo para implantar um servico web que realiza transcricao de fala em texto usando os modelos ASR ajustados. O servico web pode ser implantado em plataformas de nuvem, como o Google Cloud Run.

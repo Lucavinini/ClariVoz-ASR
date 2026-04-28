@@ -1,8 +1,8 @@
-# Model configuration
+# Configuracao do modelo
 
-place custom tiny whisper model in the custom_tiny_whisper_model directory as pytorch_model.bin.
+Coloque o modelo custom tiny whisper no diretorio custom_tiny_whisper_model como pytorch_model.bin.
 
-You can save your custom whisper model via:
+Voce pode salvar seu modelo whisper customizado com:
 
 ```python
 whisper_model.save_pretrained(<PATH>, safe_serialization=False)
