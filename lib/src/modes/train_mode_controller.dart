@@ -85,7 +85,13 @@ class _TrainModeControllerState extends State<TrainModeController> {
     phrase.uploadRecording().then((_) {
       Provider.of<Uploader>(context, listen: false)
           .updateStatus(status: UploadStatus.completed);
-    }, onError: (_) {
+    }, onError: (e) {
+      debugPrint('Upload failed: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Upload error: $e'), duration: const Duration(seconds: 5)),
+        );
+      }
       Provider.of<Uploader>(context, listen: false)
           .updateStatus(status: UploadStatus.interrupted);
     });

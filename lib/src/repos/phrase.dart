@@ -18,6 +18,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
@@ -89,6 +90,7 @@ final class Phrase {
 
     // Upload phrase text
     final phraseUrl = _blobUrl('data/$index/phrase.txt');
+    debugPrint('Uploading phrase to: $phraseUrl');
     final phraseResponse = await http.put(
       Uri.parse(phraseUrl),
       headers: {
