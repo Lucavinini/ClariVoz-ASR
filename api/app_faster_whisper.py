@@ -29,7 +29,7 @@ import tempfile
 import shutil
 
 # this can either download one of the existing converted whisper models:
-faster_whisper_model_name_or_path = "small" 
+faster_whisper_model_name_or_path = "tiny" 
 # # or you can specify a custom converted model (relative path), eg:
 # faster_whisper_model_name_or_path = "my_converted_model_path"
 # # to convert a model use this script
@@ -37,12 +37,24 @@ faster_whisper_model_name_or_path = "small"
 #     --model /path/to/model/checkpoint-2000 \
 #     --output_dir /tmp/my_converted_model_path \
 #     --quantization int8
-whisper_model = WhisperModel(faster_whisper_model_name_or_path, device="cpu", compute_type="int8")
+
+# Lazy load model to avoid blocking startup (health check timeout)
+whisper_model = None
+
+def get_model():
+    global whisper_model
+    if whisper_model is None:
+        whisper_model = WhisperModel(faster_whisper_model_name_or_path, device="cpu", compute_type="int8")
+    return whisper_model
 
 BEAM_SIZE = 5 # could set to 1 for faster processing, but that will come at decreased quality most likely
 LANGUAGE = 'en' # when no language is set, model will predict the languages (this is discuraged for our use as it makes processing slower)
 
 app = Flask(__name__)
+
+@app.route('/')
+def health():
+    return Response("OK", status=200)
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
@@ -63,7 +75,7 @@ def transcribe():
     print('>> Successfully uploaded audio file %s to %s' %(audio.filename, tmp_wav_file))    
     
     # transcribe
-    segments, info = whisper_model.transcribe(
+    segments, info = get_model().transcribe(
         tmp_wav_file,
         condition_on_previous_text=False, # this seems to reduce hallucinations, but might also not matter for our short transcripts
         language=LANGUAGE, 
