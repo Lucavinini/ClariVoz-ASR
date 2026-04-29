@@ -27,13 +27,18 @@ final class SettingsController extends StatefulWidget {
 
 class _SettingsControllerState extends State<SettingsController> {
   final TextEditingController controller = TextEditingController();
+  // [MIGRAÇÃO] Controllers para os novos campos de Azure Blob Storage
+  final TextEditingController storageUrlController = TextEditingController();
+  final TextEditingController sasTokenController = TextEditingController();
 
   @override
   void initState() {
-    final endpoint = Provider.of<SettingsRepository>(context, listen: false)
-        .transcribeEndpoint;
+    final settings =
+        Provider.of<SettingsRepository>(context, listen: false);
     setState(() {
-      controller.text = endpoint;
+      controller.text = settings.transcribeEndpoint;
+      storageUrlController.text = settings.storageBaseUrl;
+      sasTokenController.text = settings.sasToken;
     });
     super.initState();
   }
@@ -43,6 +48,8 @@ class _SettingsControllerState extends State<SettingsController> {
     return Consumer<SettingsRepository>(builder: (context, settings, _) {
       return SettingsView(
         transcriptionURLController: controller,
+        storageUrlController: storageUrlController,
+        sasTokenController: sasTokenController,
         defaultTranscriptURL: settings.transcribeEndpoint,
         settings: settings,
       );

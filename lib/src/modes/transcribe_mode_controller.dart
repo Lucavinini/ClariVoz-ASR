@@ -16,7 +16,6 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -27,6 +26,9 @@ import 'package:video_player/video_player.dart';
 import '../repos/settings_repository.dart';
 import 'transcribe_mode_view.dart';
 
+// [MIGRAÇÃO] Removido import e instância de FirebaseStorage que existia mas
+// não era utilizada neste controller. A transcrição já usava HTTP.
+
 class TranscribeModeController extends StatefulWidget {
   const TranscribeModeController({super.key});
 
@@ -36,7 +38,6 @@ class TranscribeModeController extends StatefulWidget {
 }
 
 class _TranscribeModeControllerState extends State<TranscribeModeController> {
-  final storage = FirebaseStorage.instance;
   final record = AudioRecorder();
   late VideoPlayerController _playerController;
   var _phrase = '';

@@ -20,12 +20,17 @@ import '../repos/settings_repository.dart';
 
 class SettingsView extends StatelessWidget {
   final TextEditingController transcriptionURLController;
+  // [MIGRAÇÃO] Controllers para configuração do Azure Blob Storage
+  final TextEditingController storageUrlController;
+  final TextEditingController sasTokenController;
   final String defaultTranscriptURL;
   final SettingsRepository settings;
 
   const SettingsView(
       {super.key,
       required this.transcriptionURLController,
+      required this.storageUrlController,
+      required this.sasTokenController,
       required this.defaultTranscriptURL,
       required this.settings});
 
@@ -69,6 +74,46 @@ class SettingsView extends StatelessWidget {
         onChanged: (newValue) {
           Provider.of<SettingsRepository>(context, listen: false)
               .updateTranscribeEndpoint(newValue);
+        },
+      )),
+      // [MIGRAÇÃO] Seção de configuração do Azure Blob Storage
+      // O usuário informa a URL do container e o SAS Token gerado no Azure Portal
+      const SizedBox(height: 36),
+      ListTile(
+          title: Text('Azure Blob Storage',
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge
+                  ?.copyWith(color: Colors.blue))),
+      ListTile(
+          title: TextField(
+        controller: storageUrlController,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Storage Base URL',
+          hintText:
+              'https://<account>.blob.core.windows.net/<container>',
+          hintStyle: TextStyle(color: Colors.grey),
+        ),
+        onChanged: (newValue) {
+          Provider.of<SettingsRepository>(context, listen: false)
+              .updateStorageBaseUrl(newValue);
+        },
+      )),
+      const SizedBox(height: 8),
+      ListTile(
+          title: TextField(
+        controller: sasTokenController,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'SAS Token',
+          hintText: '?sv=2022-11-02&ss=b&srt=co&sp=rwlac...',
+          hintStyle: TextStyle(color: Colors.grey),
+        ),
+        obscureText: true,
+        onChanged: (newValue) {
+          Provider.of<SettingsRepository>(context, listen: false)
+              .updateSasToken(newValue);
         },
       )),
       const SizedBox(height: 64)

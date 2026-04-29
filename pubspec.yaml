@@ -51,10 +51,10 @@ dependencies:
   record: ^5.1.2
   path_provider:
   video_player: ^2.9.2
-  firebase_storage: ^12.3.2
   shared_preferences: ^2.3.2
-  http: ^1.2.2
-  firebase_core: ^3.12.1
+  http: ^1.2.2  # [MIGRAÇÃO] Usado para upload/download no Azure Blob Storage (substituiu firebase_storage)
+  # [MIGRAÇÃO] Removido: firebase_storage: ^12.3.2
+  # [MIGRAÇÃO] Removido: firebase_core: ^3.12.1
   intl: any
   provider: any
   flutter_localizations:

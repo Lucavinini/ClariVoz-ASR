@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [MIGRAÇÃO] Firebase Storage substituído por Azure Blob Storage.
+// Upload e download agora usam HTTP REST API com SAS Token.
+// Anteriormente: usava FirebaseStorage.instance.ref() para upload/download.
+
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 final class Phrase {
@@ -22,6 +26,27 @@ final class Phrase {
   final String text;
 
   Phrase({required this.index, required this.text});
+
+  /// Base URL for Azure Blob Storage.
+  /// Format: https://<account>.blob.core.windows.net/<container>
+  /// The SAS token is appended separately.
+  static String _storageBaseUrl = '';
+  static String _sasToken = '';
+
+  /// Configura o Azure Blob Storage com a URL base do container e o SAS Token.
+  /// Chamado automaticamente pelo SettingsRepository ao carregar preferências.
+  static void configureStorage(
+      {required String storageBaseUrl, required String sasToken}) {
+    _storageBaseUrl = storageBaseUrl.trimRight();
+    _sasToken = sasToken.trimLeft();
+    // Ensure sasToken starts with '?'
+    if (_sasToken.isNotEmpty && !_sasToken.startsWith('?')) {
+      _sasToken = '?$_sasToken';
+    }
+  }
+
+  static bool get isStorageConfigured =>
+      _storageBaseUrl.isNotEmpty && _sasToken.isNotEmpty;
 
   Future<bool> get isRecordingAvailableLocally =>
       localRecordingPath.then((x) => File(x).existsSync());
@@ -35,32 +60,62 @@ final class Phrase {
         (value) => '${value.path}/prompt_temp_$index.wav',
       );
 
+  /// Monta a URL completa do blob: baseUrl/blobPath?sasToken
+  String _blobUrl(String blobPath) => '$_storageBaseUrl/$blobPath$_sasToken';
+
+  /// Baixa a gravação do Azure Blob Storage via HTTP GET.
+  /// Anteriormente: usava FirebaseStorage.instance.ref().child().getData()
   Future<void> downloadRecording() async {
-    final storageRef = FirebaseStorage.instance.ref();
-    final audioRef = storageRef.child('data/$index/recording.wav');
-    final localAudioFile = File(await localRecordingPath);
-    final remoteData = await audioRef.getData();
-    if (remoteData == null || remoteData.isEmpty) {
-      throw FileSystemException('File doesn\'t exist', audioRef.fullPath);
+    final url = _blobUrl('data/$index/recording.wav');
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode != 200 || response.bodyBytes.isEmpty) {
+      throw FileSystemException(
+          'Remote file not found or empty (HTTP ${response.statusCode})',
+          'data/$index/recording.wav');
     }
-    final List<int> data = (await audioRef.getData()) as List<int>;
-    localAudioFile.writeAsBytesSync(data);
+    final localAudioFile = File(await localRecordingPath);
+    localAudioFile.writeAsBytesSync(response.bodyBytes);
   }
 
+  /// Faz upload da gravação e texto da frase para o Azure Blob Storage via HTTP PUT.
+  /// Usa o header 'x-ms-blob-type: BlockBlob' exigido pela API REST do Azure.
+  /// Anteriormente: usava FirebaseStorage.instance.ref().putFile() e putString()
   Future<void> uploadRecording() async {
-    final storage = FirebaseStorage.instance;
-    storage.setMaxUploadRetryTime(const Duration(seconds: 5));
-    final storageRef = storage.ref();
-    final phraseRef = storageRef.child('data/$index/phrase.txt');
-    final audioRef = storageRef.child('data/$index/recording.wav');
     final audioPath = await localRecordingPath;
     final localAudioFile = File(audioPath);
     if (!localAudioFile.existsSync()) {
       throw FileSystemException('File doesn\'t exist', audioPath);
     }
-    await Future.wait([
-      phraseRef.putString(text),
-      audioRef.putFile(localAudioFile),
-    ]);
+
+    // Upload phrase text
+    final phraseUrl = _blobUrl('data/$index/phrase.txt');
+    final phraseResponse = await http.put(
+      Uri.parse(phraseUrl),
+      headers: {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': 'text/plain; charset=utf-8',
+      },
+      body: text,
+    );
+    if (phraseResponse.statusCode != 201) {
+      throw HttpException(
+          'Failed to upload phrase (HTTP ${phraseResponse.statusCode})');
+    }
+
+    // Upload audio file
+    final audioUrl = _blobUrl('data/$index/recording.wav');
+    final audioBytes = localAudioFile.readAsBytesSync();
+    final audioResponse = await http.put(
+      Uri.parse(audioUrl),
+      headers: {
+        'x-ms-blob-type': 'BlockBlob',
+        'Content-Type': 'audio/wav',
+      },
+      body: audioBytes,
+    );
+    if (audioResponse.statusCode != 201) {
+      throw HttpException(
+          'Failed to upload recording (HTTP ${audioResponse.statusCode})');
+    }
   }
 }

@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [MIGRAÇÃO] Firebase removido. O app agora usa Azure Blob Storage para
+// armazenamento de gravações, configurado via tela de Settings.
+// Anteriormente: firebase_core e firebase_options eram importados e
+// Firebase.initializeApp() era chamado antes do runApp().
+
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
-import 'firebase_options.dart';
 import 'src/project_euphonia.dart';
 import 'src/repos/audio_player.dart';
 import 'src/repos/audio_recorder.dart';
@@ -26,7 +29,8 @@ import 'src/repos/uploader.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // [MIGRAÇÃO] Removido: await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // A configuração do Azure Blob Storage é feita em SettingsRepository.initFromPreferences()
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => PhrasesRepository()),
     ChangeNotifierProxyProvider<PhrasesRepository, AudioRecorder>(
