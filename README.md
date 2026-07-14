@@ -19,7 +19,7 @@ Os toolkits open-source do Project Euphonia foram concebidos para fornecer aos d
 
 Os toolkits open-source do Project Euphonia são projetados para facilitar a criação de soluções customizadas de reconhecimento de fala. O conjunto inclui:
 
-- Um **aplicativo móvel baseado em Flutter** para gravar dados de fala e associá-los a frases de texto. O aplicativo armazena dados em uma instância do Firebase Storage controlada pelo desenvolvedor.
+- Um **aplicativo móvel baseado em Flutter** para gravar dados de fala e associá-los a frases de texto. O aplicativo armazena dados em uma instância do Azure Blob Storage controlada pelo desenvolvedor.
 - **Notebooks do Google Colab** com código de exemplo e documentação para ajuste fino de modelos open-source de Reconhecimento Automático de Fala (ASR). Os notebooks ajudam a orientar os desenvolvedores nos seguintes tópicos: preparação de dados, treinamento de modelos e avaliação de desempenho.
 - Código de exemplo para implantar um **serviço web** que realiza transcrição de fala para texto usando os modelos ASR ajustados. O serviço web pode ser implantado em plataformas de nuvem, como o Google Cloud Run.
 
@@ -43,15 +43,15 @@ O aplicativo vem com um conjunto de 100 frases padrão localizado em `assets/phr
 
 Crie uma lista de 100 frases curtas em inglês de forma que elas tenham boa distribuição de todos os fonemas e seus alofones, tentando manter o comprimento de cada frase abaixo de 140 caracteres. Garanta que nenhuma palavra da lista seja repetida mais de três vezes. As frases não precisam necessariamente formar sentenças válidas; o mais importante é garantir cobertura de todos os fonemas e manter uma boa distribuição de alofones. Não adicione numeração no início da lista.
 
-Os dados de fala gravados são armazenados em uma instância do **Firebase Storage** criada e controlada por você.
+Os dados de fala gravados são armazenados em uma instância do **Azure Blob Storage** criada e controlada por você.
 
 #### Pré-requisitos
 
-O aplicativo requer um [Firebase Storage](https://firebase.google.com/docs/storage). Siga os passos abaixo:
+O aplicativo requer uma [conta de armazenamento do Azure (Storage Account)](https://learn.microsoft.com/azure/storage/blobs/storage-blobs-introduction) com um container do tipo Blob. Siga os passos abaixo:
 
-- Crie um projeto no [console do Firebase](https://console.firebase.google.com/).
-- [Crie um Firebase Storage](https://firebase.google.com/docs/storage/web/start) (Observação: não é "database", precisa ser "storage").
-- Configure as regras de segurança como públicas. OBSERVAÇÃO: isso torna seus arquivos acessíveis por qualquer pessoa. Considere adicionar autenticação para proteger seus dados.
+- Crie uma [conta de armazenamento](https://learn.microsoft.com/azure/storage/common/storage-account-create) no [portal do Azure](https://portal.azure.com/).
+- [Crie um container Blob](https://learn.microsoft.com/azure/storage/blobs/storage-quickstart-blobs-portal) dentro da conta de armazenamento para guardar as gravações e frases.
+- Gere um [SAS Token](https://learn.microsoft.com/azure/storage/common/storage-sas-overview) com permissões de leitura, escrita, listagem e criação (`rwlac`) para o container. OBSERVAÇÃO: trate o SAS Token como uma credencial sensível, pois ele concede acesso aos seus arquivos. Prefira tokens com validade limitada e restrinja o escopo ao container necessário.
 
 Instale o [Android Studio](https://developer.android.com/studio/install) 2023.3.1 (Jellyfish) ou superior para depurar e compilar código Java ou Kotlin para Android. O Flutter requer a versão completa do Android Studio.
 
@@ -59,12 +59,10 @@ Instale o [Flutter SDK](https://docs.flutter.dev/get-started/install). Ao execut
 
 ### Instalação
 
-- Execute `firebase login`
-- Execute `dart pub global activate flutterfire_cli`
-- Configure o projeto Flutter executando `flutterfire configure --project=<project-id>`
-
 Para Android, use o Android Studio ou execute `flutter build apk` e instale `build/app/outputs/flutter-apk/app-release.apk` no telefone.
 Para iOS: execute `cd ios` e `pod install`. Certifique-se de que os perfis de provisionamento móvel estejam presentes para instalar o app no dispositivo.
+
+Após instalar o app, abra a tela de **Configurações (Settings)** e informe a **Storage Base URL** (por exemplo, `https://<account>.blob.core.windows.net/<container>`) e o **SAS Token** gerados no passo anterior. Esses valores ficam salvos localmente no dispositivo (via `SharedPreferences`) e são usados para o upload e download das gravações.
 
 ### Treinar modelo
 
@@ -84,7 +82,7 @@ Faça o deploy da aplicação web no Google Cloud Run seguindo os passos descrit
 
 ## Uso
 
-Após seguir todas as etapas de [Configuração](#configuração), você terá instalado o Project Euphonia App no seu smartphone e a API no Google Cloud Run. Agora você pode definir a URL da instância do Google Cloud Run nas configurações do app e começar a transcrever sua fala.
+Após seguir todas as etapas de [Configuração](#configuração), você terá instalado o Project Euphonia App no seu smartphone, a API no Google Cloud Run e o Azure Blob Storage configurado. Agora você pode definir a URL da instância do Google Cloud Run e as credenciais do Azure Blob Storage (Storage Base URL e SAS Token) nas configurações do app e começar a transcrever sua fala.
 
 ## Localização (Internacionalização)
 

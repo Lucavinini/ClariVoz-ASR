@@ -82,6 +82,6 @@ Os toolkits open-source do Project Euphonia foram concebidos para fornecer aos d
 
 Os toolkits open-source do Project Euphonia sao projetados para facilitar a criacao de solucoes customizadas de reconhecimento de fala. O conjunto inclui:
 
-- Um aplicativo movel baseado em Flutter para gravar dados de fala e associa-los a frases de texto. O aplicativo armazena dados em uma instancia do Firebase Storage controlada pelo desenvolvedor.
+- Um aplicativo movel baseado em Flutter para gravar dados de fala e associa-los a frases de texto. O aplicativo armazena dados em uma instancia do Azure Blob Storage controlada pelo desenvolvedor.
 - Notebooks do Google Colab com codigo de exemplo e documentacao para ajuste fino de modelos open-source de Reconhecimento Automatico de Fala (ASR). Os notebooks ajudam a orientar os desenvolvedores nos seguintes topicos: preparacao de dados, treinamento de modelos e avaliacao de desempenho.
 - Codigo de exemplo para implantar um servico web que realiza transcricao de fala em texto usando os modelos ASR ajustados. O servico web pode ser implantado em plataformas de nuvem, como o Google Cloud Run.
