@@ -29,7 +29,9 @@ import tempfile
 import shutil
 
 # this can either download one of the existing converted whisper models:
-faster_whisper_model_name_or_path = "small" 
+# NOTE: mantido "tiny" para caber no plano App Service F1 (Free, ~1GB RAM).
+# "small" causaria OOM no F1; usar tiny evita derrubar o serviço.
+faster_whisper_model_name_or_path = "tiny" 
 # # or you can specify a custom converted model (relative path), eg:
 # faster_whisper_model_name_or_path = "my_converted_model_path"
 # # to convert a model use this script
