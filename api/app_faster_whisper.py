@@ -29,7 +29,7 @@ import tempfile
 import shutil
 
 # this can either download one of the existing converted whisper models:
-faster_whisper_model_name_or_path = "tiny" 
+faster_whisper_model_name_or_path = "small" 
 # # or you can specify a custom converted model (relative path), eg:
 # faster_whisper_model_name_or_path = "my_converted_model_path"
 # # to convert a model use this script
@@ -48,7 +48,7 @@ def get_model():
     return whisper_model
 
 BEAM_SIZE = 5 # could set to 1 for faster processing, but that will come at decreased quality most likely
-LANGUAGE = 'en' # when no language is set, model will predict the languages (this is discuraged for our use as it makes processing slower)
+LANGUAGE = 'pt' # when no language is set, model will predict the languages (this is discuraged for our use as it makes processing slower)
 
 app = Flask(__name__)
 
